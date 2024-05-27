@@ -1,0 +1,432 @@
+{
+	"info": {
+		"_postman_id": "eaf79201-bcaf-40a4-8b43-f0af16a897e3",
+		"name": "TestViaCEPCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35197072"
+	},
+	"item": [
+		{
+			"name": "CEPValido",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"cep\", \"50030310\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Testes para verificar a resposta da API do ViaCEP para o CEP 50030-310 (Avenida Rio Branco, Recife-PE)\r",
+							"pm.test(\"Response for CEP 50030-310\", function () {\r",
+							"    // Verifica se a resposta possui status 200 OK\r",
+							"    pm.response.to.have.status(200);\r",
+							"\r",
+							"    // Verifica se o formato da resposta é JSON\r",
+							"    pm.response.to.be.json;\r",
+							"\r",
+							"    // Verifica os campos na resposta\r",
+							"    var response = pm.response.json();\r",
+							"    pm.test(\"Check 'cep' field\", function () {\r",
+							"        pm.expect(response.cep).to.eql(\"50030-310\");\r",
+							"    });\r",
+							"    pm.test(\"Check 'logradouro' field\", function () {\r",
+							"        pm.expect(response.logradouro).to.eql(\"Avenida Rio Branco\");\r",
+							"    });\r",
+							"    pm.test(\"Check 'complemento' field\", function () {\r",
+							"        pm.expect(response.complemento).to.eql(\"\");\r",
+							"    });\r",
+							"    pm.test(\"Check 'bairro' field\", function () {\r",
+							"        pm.expect(response.bairro).to.eql(\"Recife\");\r",
+							"    });\r",
+							"    pm.test(\"Check 'localidade' field\", function () {\r",
+							"        pm.expect(response.localidade).to.eql(\"Recife\");\r",
+							"    });\r",
+							"    pm.test(\"Check 'uf' field\", function () {\r",
+							"        pm.expect(response.uf).to.eql(\"PE\");\r",
+							"    });\r",
+							"    pm.test(\"Check 'ibge' field\", function () {\r",
+							"        pm.expect(response.ibge).to.eql(\"2611606\");\r",
+							"    });\r",
+							"    pm.test(\"Check 'gia' field\", function () {\r",
+							"        pm.expect(response.gia).to.eql(\"\");\r",
+							"    });\r",
+							"    pm.test(\"Check 'ddd' field\", function () {\r",
+							"        pm.expect(response.ddd).to.eql(\"81\");\r",
+							"    });\r",
+							"    pm.test(\"Check 'siafi' field\", function () {\r",
+							"        pm.expect(response.siafi).to.eql(\"2531\");\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://viacep.com.br/ws/{{cep}}/json/",
+					"protocol": "https",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						"{{cep}}",
+						"json",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CEPValidoSemEndereço",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"cep\", \"99999999\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verificar se o status da resposta é 200\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Verificar se o campo \"erro\" está presente e é verdadeiro\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.test(\"Response has erro field set to true\", function () {\r",
+							"    pm.expect(jsonData).to.have.property(\"erro\", true);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://viacep.com.br/ws/{{cep}}/json/",
+					"protocol": "https",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						"{{cep}}",
+						"json",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CEPInvalidoCurto",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"cep\", \"12345\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verificar se o status da resposta é 400\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"// Verificar se a resposta contém mensagem de erro\r",
+							"pm.test(\"Response has error message\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Verifique a URL\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://viacep.com.br/ws/{{cep}}/json/",
+					"protocol": "https",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						"{{cep}}",
+						"json",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CEPInvalidoLongo",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"cep\", \"1234567890\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verificar se o status da resposta é 400\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"// Verificar se a resposta contém mensagem de erro\r",
+							"pm.test(\"Response has error message\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Verifique a URL\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://viacep.com.br/ws/{{cep}}/json/",
+					"protocol": "https",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						"{{cep}}",
+						"json",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CEPInvalidoAlfanumerico",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"cep\", \"ABC12345\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verificar se o status da resposta é 400\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"// Verificar se a resposta contém mensagem de erro\r",
+							"pm.test(\"Response has error message\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Verifique a URL\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://viacep.com.br/ws/{{cep}}/json/",
+					"protocol": "https",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						"{{cep}}",
+						"json",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CEPInvalidoVazio",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"cep\", \"\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verificar se o status da resposta é 400\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"// Verificar se a resposta contém mensagem de erro\r",
+							"pm.test(\"Response has error message\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Verifique a URL\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://viacep.com.br/ws/{{cep}}/json/",
+					"protocol": "https",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						"{{cep}}",
+						"json",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CEPInvalidoComEspaco",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"cep\", \"12 20345 20678\");"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verificar se o status da resposta é 400\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"// Verificar se a resposta contém mensagem de erro\r",
+							"pm.test(\"Response has error message\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Verifique a URL\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://viacep.com.br/ws/{{cep}}/json/",
+					"protocol": "https",
+					"host": [
+						"viacep",
+						"com",
+						"br"
+					],
+					"path": [
+						"ws",
+						"{{cep}}",
+						"json",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
